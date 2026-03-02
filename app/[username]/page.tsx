@@ -3,12 +3,17 @@ import { notFound } from "next/navigation";
 import { GitCommit, Star, Archive, TrendingUp, Github } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import dbConnect from "@/lib/dbConnect";
+
 async function getProfileData(username: string) {
+    await dbConnect();
     return await User.findOne({ githubUsername: username });
 }
 
-export default async function PublicProfilePage({ params }: { params: { username: string } }) {
-    const user = await getProfileData(params.username);
+export default async function PublicProfilePage({ params }: { params: any }) {
+    const { username } = await params;
+    const user = await getProfileData(username);
+
 
     if (!user) {
         notFound();
