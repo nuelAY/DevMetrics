@@ -23,9 +23,9 @@ export const authOptions: any = {
       return session;
     },
   },
-  pages: {
+  /* pages: {
     signIn: '/auth/signin',
-  },
+  }, */
   session: {
     strategy: "jwt",
   },
