@@ -1,13 +1,22 @@
 "use client";
 
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Search, User, Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useNav } from "@/context/NavContext";
 
 export function Header() {
     const { data: session } = useSession();
+    const { toggle } = useNav();
 
     return (
-        <header className="fixed top-0 right-0 left-64 h-20 glass border-b border-white/10 z-40 flex items-center justify-between px-8">
+        <header className="fixed top-0 right-0 left-0 lg:left-64 h-20 glass border-b border-white/10 z-40 flex items-center justify-between px-4 md:px-8">
+            <button
+                onClick={toggle}
+                className="lg:hidden p-2 mr-2 text-white/60 hover:text-white transition-colors"
+            >
+                <Menu className="w-6 h-6" />
+            </button>
+
             <div className="flex items-center gap-4 flex-1">
                 <div className="relative w-full max-w-md">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />

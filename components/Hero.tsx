@@ -16,8 +16,8 @@ export function Hero() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-center z-10"
             >
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
-                    Understand your <br /> coding impact.
+                <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 leading-tight">
+                    Understand your <br className="hidden sm:block" /> coding impact.
                 </h1>
                 <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto">
                     DevMetrics analyzes your GitHub activity to provide beautiful,

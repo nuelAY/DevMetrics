@@ -61,10 +61,10 @@ export default function DashboardPage() {
             <Sidebar />
             <Header />
 
-            <main className="ml-64 pt-28 p-8">
+            <main className="lg:ml-64 pt-28 p-4 transition-all duration-300">
                 <div className="max-w-7xl mx-auto">
                     {/* Header Action */}
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <h2 className="text-2xl font-bold">Performance Analytics</h2>
                         <button
                             onClick={handleShare}
