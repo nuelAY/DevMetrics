@@ -1,0 +1,45 @@
+# DevMetrics: Technical Project Summary
+
+## 1. Project Scope
+DevMetrics is a "Developer Performance Intelligence" dashboard designed to analyze GitHub activity and present it through a premium, high-fidelity user interface. It serves as a professional portfolio tool for developers to showcase their productivity to recruiters and peers.
+
+### Key Features
+- **GitHub OAuth Integration**: Secure authentication and data access.
+- **Data Aggregation Engine**: Real-time fetching of repository stats, language distribution, and commit frequency.
+- **AI Insights**: A rule-based logic engine that generates personalized productivity narratives and "Dev Scores."
+- **Interactive Dashboard**: Visualized activity trends and glassmorphism-based metric cards.
+- **Public Profiles**: Dynamic, shareable URLs (`/[username]`) optimized for external viewing.
+- **Mobile Responsiveness**: A fully adaptive UI with a slide-over mobile navigation system.
+
+## 2. Tech Stack & Libraries
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4 (with custom glassmorphism utilities)
+- **Animations**: Framer Motion
+- **Charts**: Recharts
+- **Authentication**: NextAuth.js (Auth.js)
+- **Database**: MongoDB & Mongoose
+- **API Client**: @octokit/rest (GitHub API)
+- **Icons**: Lucide React
+
+## 3. Challenges & Solutions
+
+| Problem | Root Cause | Solution |
+| :--- | :--- | :--- |
+| **Dependency Conflict** | `mongodb` v7 was incompatible with `@auth/mongodb-adapter`'s peer requirements. | Downgraded `mongodb` to v6 and utilized `--legacy-peer-deps` for a stable build. |
+| **Mongoose Buffering Timeout** | Database operations were being called before a connection was established. | Created a `dbConnect.ts` utility using a global caching pattern to ensure a singleton connection. |
+| **Production 404 Error** | NextAuth was configured for a custom `/auth/signin` page that didn't exist. | Reverted to default NextAuth pages to ensure a reliable auth flow in production. |
+| **Git Permission Denied** | SSH conflicts between multiple GitHub accounts on the local machine. | Switched to HTTPS-based remotes and used Personal Access Tokens (PAT) for explicit account targeting. |
+| **Server-side Exceptions** | Public profile pages attempted DB queries in SSR without an active connection. | Integrated `dbConnect` into the server-side data fetching logic and correctly awaited `params`. |
+| **Mobile Navigation** | Fixed sidebar layout was unusable on small screens. | Implemented `NavContext` with a mobile-specific drawer guided by Framer Motion animations. |
+
+## 4. Future Roadmap (In Progress)
+- **Redis Caching**: Faster API response times and rate limit optimization.
+- **Contribution Heatmap**: Detailed, GitHub-style visual grid for year-long activity tracking.
+- **Webhooks Integration**: Real-time push updates for commits and PRs.
+- **AI Career Suggestions**: Expanding the AI engine to suggest specific tech stacks for career pivots based on current coding trends.
+- **Advanced Repository Analytics**: Deep dives into code frequency per folder and PR velocity trends.
+
+## 5. Final Result
+A production-ready SaaS template that demonstrates strong full-stack capabilities, premium UI/UX design, and robust error handling across local and deployed environments.
+
