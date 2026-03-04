@@ -353,7 +353,7 @@ export default function ActivityPage() {
                                                     <h4 className="font-bold text-lg">{session.repo}</h4>
                                                 </div>
                                                 <span className="text-[10px] font-black px-2 py-1 bg-white/5 rounded-full text-white/30 group-hover:text-purple-400 transition-colors">
-                                                   <p className="px-5">{session.events.length}</p> EVENTS
+                                                    <p className="px-5">{session.events.length}</p> EVENTS
                                                 </span>
                                             </div>
 
@@ -379,11 +379,22 @@ export default function ActivityPage() {
                                                                 </div>
                                                                 <div className="flex-1">
                                                                     <div className="flex items-center justify-between gap-4 mb-1.5 flex-wrap">
-                                                                        <p className="text-sm font-bold text-white/80">{
-                                                                            event.type === "PushEvent" ? commitMessage || "System push update" :
-                                                                                event.type === "PullRequestEvent" ? `${event.payload.action} Pull Request` :
-                                                                                    `Updated ${event.type.replace("Event", "")}`
-                                                                        }</p>
+                                                                        <div className="text-sm font-bold text-white/80">{
+                                                                            event.type === "PushEvent" ? (
+                                                                                <div className="flex flex-col gap-0.5">
+                                                                                    <span>{event.payload.commits?.[0]?.message || "System push update"}</span>
+                                                                                    {event.payload.commits?.length > 1 && (
+                                                                                        <span className="text-[10px] text-blue-400/60 font-medium italic">
+                                                                                            + {event.payload.commits.length - 1} more {(event.payload.commits.length - 1) === 1 ? 'commit' : 'commits'} in this push
+                                                                                        </span>
+                                                                                    )}
+                                                                                </div>
+                                                                            ) : event.type === "PullRequestEvent" ? (
+                                                                                `${event.payload.action} Pull Request`
+                                                                            ) : (
+                                                                                `Updated ${event.type.replace("Event", "")}`
+                                                                            )
+                                                                        }</div>
                                                                         <div className="flex items-center gap-2">
                                                                             {badge && (
                                                                                 <span className={cn("text-[8px] font-black px-2 py-0.5 rounded-full border flex items-center gap-1 uppercase tracking-tighter", badge.color)}>
