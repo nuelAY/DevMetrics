@@ -73,6 +73,21 @@ export class GitHubService {
       .sort((a, b) => b.percent - a.percent);
   }
 
+  async getDetailedActivity(username: string) {
+    const { data } = await this.octokit.activity.listPublicEventsForUser({
+      username,
+      per_page: 100,
+    });
+
+    return data.map(event => ({
+      id: event.id,
+      type: event.type,
+      repo: event.repo.name,
+      createdAt: event.created_at,
+      payload: event.payload
+    }));
+  }
+
   async getRepoLanguages(owner: string, repo: string) {
     const { data } = await this.octokit.repos.listLanguages({
       owner,
