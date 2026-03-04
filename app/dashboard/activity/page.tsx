@@ -353,7 +353,7 @@ export default function ActivityPage() {
                                                     <h4 className="font-bold text-lg">{session.repo}</h4>
                                                 </div>
                                                 <span className="text-[10px] font-black px-2 py-1 bg-white/5 rounded-full text-white/30 group-hover:text-purple-400 transition-colors">
-                                                    {session.events.length} EVENTS
+                                                   <p className="px-5">{session.events.length}</p> EVENTS
                                                 </span>
                                             </div>
 

@@ -1,15 +1,33 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Bell, Search, User, Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useNav } from "@/context/NavContext";
+import { cn } from "@/lib/utils";
 
 export function Header() {
     const { data: session } = useSession();
     const { toggle } = useNav();
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <header className="fixed top-0 right-0 left-0 lg:left-64 h-20 glass border-b border-white/10 z-40 flex items-center justify-between px-4 md:px-8">
+        <header
+            className={cn(
+                "fixed top-0 right-0 left-0 lg:left-64 h-20 transition-all duration-300 z-40 flex items-center justify-between px-4 md:px-8",
+                scrolled
+                    ? "bg-[#0a0a0b]/80 backdrop-blur-xl border-b border-white/10"
+                    : "bg-transparent border-b border-transparent"
+            )}
+        >
             <button
                 onClick={toggle}
                 className="lg:hidden p-2 mr-2 text-white/60 hover:text-white transition-colors"
