@@ -6,6 +6,22 @@ const UserSchema = new mongoose.Schema({
   image: String,
   emailVerified: Date,
   githubUsername: String,
+  bio: String,
+  publicEmail: String,
+  settings: {
+    theme: { type: String, default: "Dark Neural" },
+    glassIntensity: { type: Number, default: 75 },
+    neonAccents: { type: Boolean, default: true },
+    notifications: {
+      velocityAlerts: { type: Boolean, default: true },
+      metricMilestones: { type: Boolean, default: true },
+      neuralSummaries: { type: Boolean, default: false },
+      systemAnomalies: { type: Boolean, default: false },
+    },
+    security: {
+      sessionTimeout: { type: String, default: "24 Hours" },
+    }
+  },
   stats: {
     totalCommits: { type: Number, default: 0 },
     prVelocity: { type: Number, default: 0 },

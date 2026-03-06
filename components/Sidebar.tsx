@@ -62,10 +62,19 @@ export function Sidebar() {
             </nav>
 
             <div className="p-4 border-t border-white/10 space-y-2">
-                <button className="flex items-center gap-3 w-full px-4 py-3 text-white/50 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                    <Settings className="w-5 h-5" />
+                <Link
+                    href="/dashboard/settings"
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                        "flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-200 group",
+                        pathname === "/dashboard/settings"
+                            ? "bg-white/10 text-white shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]"
+                            : "text-white/50 hover:text-white hover:bg-white/5"
+                    )}
+                >
+                    <Settings className={cn("w-5 h-5", pathname === "/dashboard/settings" ? "text-blue-400" : "group-hover:text-blue-400")} />
                     <span className="font-medium">Settings</span>
-                </button>
+                </Link>
                 <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="flex items-center gap-3 w-full px-4 py-3 text-red-400/70 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-all"
