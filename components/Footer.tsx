@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Twitter, Linkedin, Zap } from "lucide-react";
+import { Github, Twitter, Linkedin, Zap, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
@@ -32,9 +32,15 @@ export function Footer() {
                     <div className="space-y-6">
                         <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Platform</h4>
                         <ul className="space-y-4">
-                            {["Analytics", "Activity Hub", "Growth Coach", "Integrations"].map((item) => (
-                                <li key={item}>
-                                    <Link href="#" className="text-sm font-bold text-white/30 hover:text-white transition-colors">{item}</Link>
+                            {[
+                                { name: "Dashboard", },
+                                { name: "Projects", },
+                                { name: "Activity", },
+                                { name: "Analytics", },
+                                { name: "Settings", },
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <p className="text-sm font-bold text-white/30 hover:text-white transition-colors">{item.name}</p>
                                 </li>
                             ))}
                         </ul>
@@ -42,13 +48,56 @@ export function Footer() {
 
                     <div className="space-y-6">
                         <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Resources</h4>
-                        <ul className="space-y-4">
-                            {["Documentation", "API Docs", "Changelog", "Security"].map((item) => (
-                                <li key={item}>
-                                    <Link href="#" className="text-sm font-bold text-white/30 hover:text-white transition-colors">{item}</Link>
-                                </li>
+                        <div className="space-y-3">
+                            {[
+                                {
+                                    title: "Core Stack",
+                                    items: [
+                                        { name: "Next.js", href: "https://nextjs.org" },
+                                        { name: "React", href: "https://react.dev" },
+                                        { name: "TypeScript", href: "https://www.typescriptlang.org" },
+                                    ]
+                                },
+                                {
+                                    title: "UI & Styling",
+                                    items: [
+                                        { name: "Tailwind CSS", href: "https://tailwindcss.com" },
+                                        { name: "Framer Motion", href: "https://www.framer.com/motion" },
+                                        { name: "Lucide React", href: "https://lucide.dev" },
+                                    ]
+                                },
+                                {
+                                    title: "Data & Auth",
+                                    items: [
+                                        { name: "MongoDB", href: "https://www.mongodb.com" },
+                                        { name: "NextAuth.js", href: "https://next-auth.js.org" },
+                                    ]
+                                },
+                                {
+                                    title: "Tools & APIs",
+                                    items: [
+                                        { name: "Recharts", href: "https://recharts.org" },
+                                        { name: "Octokit", href: "https://github.com/octokit/rest.js" },
+                                    ]
+                                }
+                            ].map((category) => (
+                                <details key={category.title} className="group">
+                                    <summary className="text-sm font-bold text-white/50 hover:text-white transition-colors cursor-pointer list-none flex items-center justify-between">
+                                        <span>{category.title}</span>
+                                        <ChevronDown className="w-4 h-4 group-open:rotate-180 transition-transform duration-200" />
+                                    </summary>
+                                    <ul className="pl-3 mt-3 space-y-3 border-l-2 border-white/10">
+                                        {category.items.map((item) => (
+                                            <li key={item.name}>
+                                                <Link href={item.href} target="_blank" rel="noopener noreferrer" className="text-xs font-semibold text-white/30 hover:text-white transition-colors block">
+                                                    {item.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </details>
                             ))}
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
