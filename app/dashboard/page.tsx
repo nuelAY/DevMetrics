@@ -7,9 +7,28 @@ import { motion } from "framer-motion";
 import { GitCommit, Star, Archive, TrendingUp } from "lucide-react";
 import { ActivityChart } from "@/components/ActivityChart";
 import { Share2, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface Language {
+    name: string;
+    percent: number;
+}
+
+interface Activity {
+    date: string;
+    count: number;
+}
+
+interface Stats {
+    totalRepos: number;
+    publicRepos: number;
+    stars: number;
+    activity: Activity[];
+    languages: Language[];
+}
 
 export default function DashboardPage() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
 
     const [aiSummary, setAiSummary] = useState("");
@@ -57,7 +76,7 @@ export default function DashboardPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white">
+        <div className="min-h-screen bg-background text-white">
             <Sidebar />
             <Header />
 
@@ -79,13 +98,13 @@ export default function DashboardPage() {
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="mb-10 p-6 rounded-3xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-white/10 glass"
+                        className="mb-10 p-6 rounded-3xl bg-linear-to-r from-blue-600/20 to-purple-600/20 border border-white/10 glass"
                     >
                         <div className="flex items-center gap-4 mb-3">
                             <div className="px-3 py-1 bg-blue-500/20 rounded-full border border-blue-500/30 text-[10px] font-bold uppercase tracking-widest text-blue-400">
                                 AI Insights
                             </div>
-                            <div className="h-[1px] flex-1 bg-white/5" />
+                            <div className="h-px flex-1 bg-white/5" />
                         </div>
                         <p className="text-lg font-medium leading-relaxed">
                             {loading ? "Analyzing your GitHub activity..." : aiSummary}
@@ -147,7 +166,7 @@ export default function DashboardPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    stats?.languages?.slice(0, 6).map((lang: any, i: number) => (
+                                    stats?.languages?.slice(0, 6).map((lang, i) => (
                                         <div key={lang.name}>
                                             <div className="flex justify-between text-sm mb-2">
                                                 <span className="text-white/70">{lang.name}</span>
@@ -177,5 +196,4 @@ export default function DashboardPage() {
     );
 }
 
-// Helper for cn (already defined in lib/utils but just to be safe in this file scope if needed during copy)
-import { cn } from "@/lib/utils";
+// Helper for cn is now imported at the top

@@ -1,5 +1,18 @@
 import { Octokit } from "@octokit/rest";
 
+export interface PushEventPayload {
+  commits?: {
+    sha: string;
+    message: string;
+    author: {
+      email: string;
+      name: string;
+    };
+    distinct: boolean;
+    url: string;
+  }[];
+}
+
 export class GitHubService {
   private octokit: Octokit;
 
@@ -41,7 +54,7 @@ export class GitHubService {
       if (event.type === 'PushEvent' && event.created_at) {
         const dateKey = event.created_at.split('T')[0];
         if (activityMap[dateKey] !== undefined) {
-           const commitsCount = (event.payload as any).commits?.length || 1;
+           const commitsCount = (event.payload as PushEventPayload).commits?.length || 1;
            activityMap[dateKey] += commitsCount;
         }
       }

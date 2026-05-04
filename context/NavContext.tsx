@@ -15,10 +15,12 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
-    // Close sidebar when route changes on mobile
     useEffect(() => {
-        setIsOpen(false);
-    }, [pathname]);
+        if (isOpen) {
+            const timer = setTimeout(() => setIsOpen(false), 0);
+            return () => clearTimeout(timer);
+        }
+    }, [pathname, isOpen]);
 
     const toggle = () => setIsOpen((prev) => !prev);
 

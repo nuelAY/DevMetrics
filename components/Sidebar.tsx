@@ -21,7 +21,7 @@ export function Sidebar() {
 
     const sidebarContent = (
         <aside className={cn(
-            "fixed left-0 top-0 h-full w-64 glass border-r border-white/10 z-[60] flex flex-col pt-8 transition-transform duration-300 lg:translate-x-0",
+            "fixed left-0 top-0 h-full w-64 glass border-r border-white/10 z-60 flex flex-col pt-8 transition-transform duration-300 lg:translate-x-0",
             isOpen ? "translate-x-0" : "-translate-x-full"
         )}>
             <div className="px-6 mb-10 flex items-center justify-between">
@@ -96,7 +96,7 @@ export function Sidebar() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setIsOpen(false)}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] lg:hidden"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-55 lg:hidden"
                     />
                 )}
             </AnimatePresence>

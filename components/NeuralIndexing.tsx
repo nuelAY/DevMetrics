@@ -32,7 +32,7 @@ export function NeuralIndexing() {
     ];
 
     return (
-        <section id="engineering" className="py-32 px-6 bg-gradient-to-b from-transparent to-blue-500/5 overflow-hidden">
+        <section id="engineering" className="py-32 px-6 bg-linear-to-b from-transparent to-blue-500/5 overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row items-center gap-20">
                     <div className="lg:w-1/2 space-y-8">

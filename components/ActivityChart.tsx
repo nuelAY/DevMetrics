@@ -1,8 +1,13 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
-export function ActivityChart({ data }: { data: any[] }) {
+interface ActivityData {
+    date: string;
+    count: number;
+}
+
+export function ActivityChart({ data }: { data: ActivityData[] | undefined }) {
     const chartData = data?.map(d => ({
         name: new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }),
         count: d.count,

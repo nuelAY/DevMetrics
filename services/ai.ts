@@ -1,6 +1,13 @@
+interface AIStats {
+  activity: { date: string; count: number }[];
+  languages: { name: string; percent: number }[];
+  stars: number;
+  totalRepos: number;
+}
+
 export class AIService {
-  static generateSummary(stats: any, userData: any) {
-    const totalCommits = stats.activity.reduce((acc: number, a: any) => acc + a.count, 0);
+  static generateSummary(stats: AIStats) {
+    const totalCommits = stats.activity.reduce((acc: number, a) => acc + a.count, 0);
     const avgCommits = totalCommits / 7;
     const topLanguage = stats.languages[0]?.name || "various technologies";
 
@@ -18,8 +25,8 @@ export class AIService {
     return statements.join(" ");
   }
 
-  static calculateProductivityScore(stats: any) {
-    const totalCommits = stats.activity.reduce((acc: number, a: any) => acc + a.count, 0);
+  static calculateProductivityScore(stats: AIStats) {
+    const totalCommits = stats.activity.reduce((acc: number, a) => acc + a.count, 0);
     const repoBonus = Math.min(stats.totalRepos * 2, 20);
     const commitScore = Math.min(totalCommits * 5, 60);
     const starBonus = Math.min(stats.stars * 5, 20);

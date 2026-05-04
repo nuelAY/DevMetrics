@@ -19,7 +19,8 @@ import {
 import { useSession } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { useSettings } from "@/context/SettingsContext";
+import { useSettings} from "@/context/SettingsContext";
+import Image from "next/image";
 
 export default function SettingsPage() {
     const { data: session, update: updateSession } = useSession();
@@ -113,13 +114,13 @@ export default function SettingsPage() {
     ];
 
     if (settingsLoading) {
-        return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
+        return <div className="min-h-screen bg-background flex items-center justify-center">
             <Zap className="w-8 h-8 text-blue-500 animate-pulse" />
         </div>;
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white overflow-hidden">
+        <div className="min-h-screen bg-background text-white overflow-hidden">
             <Sidebar />
             <Header />
 
@@ -188,12 +189,12 @@ export default function SettingsPage() {
                                 {activeTab === "profile" && (
                                     <div className="space-y-8">
                                         <div className="flex items-center gap-6">
-                                            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-[2px]">
-                                                <div className="w-full h-full rounded-full bg-[#0a0a0b] flex items-center justify-center overflow-hidden">
+                                            <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-purple-500 p-[2px]">
+                                                <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                                                     {avatarPreview ? (
-                                                        <img src={avatarPreview} alt="Avatar Preview" className="w-full h-full object-cover" />
+                                                        <Image src={avatarPreview} alt="Avatar Preview" className="w-full h-full object-cover" />
                                                     ) : session?.user?.image ? (
-                                                        <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+                                                        <Image src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <User className="w-10 h-10 text-white/20" />
                                                     )}
@@ -267,10 +268,10 @@ export default function SettingsPage() {
                                         <div>
                                             <h3 className="text-lg font-bold mb-4">Neural Theme Selection</h3>
                                             <div className="grid grid-cols-3 gap-4">
-                                                {["Dark Neural", "Cyber Ghost", "Deep Void"].map((theme, i) => (
+                                                {(["Dark Neural", "Cyber Ghost", "Deep Void"] as const).map((theme) => (
                                                     <div
                                                         key={theme}
-                                                        onClick={() => updateSettings({ theme: theme as any })}
+                                                        onClick={() => updateSettings({ theme })}
                                                         className={cn(
                                                             "p-4 rounded-2xl border transition-all cursor-pointer group",
                                                             settings.theme === theme ? "bg-white/10 border-blue-500/50 shadow-lg shadow-blue-500/10" : "bg-white/5 border-white/5 hover:border-white/20"
@@ -278,13 +279,13 @@ export default function SettingsPage() {
                                                     >
                                                         <div className={cn(
                                                             "w-full aspect-video rounded-lg mb-3 overflow-hidden relative",
-                                                            theme === "Dark Neural" ? "bg-[#0a0a0b]" :
+                                                            theme === "Dark Neural" ? "bg-background" :
                                                                 theme === "Cyber Ghost" ? "bg-[#0c0c1e]" : "bg-black"
                                                         )}>
                                                             <div className={cn(
                                                                 "absolute inset-0 opacity-20",
-                                                                theme === "Dark Neural" ? "bg-gradient-to-br from-blue-500/40 to-transparent" :
-                                                                    theme === "Cyber Ghost" ? "bg-gradient-to-br from-purple-500/40 to-transparent" : ""
+                                                                theme === "Dark Neural" ? "bg-linear-to-br from-blue-500/40 to-transparent" :
+                                                                    theme === "Cyber Ghost" ? "bg-linear-to-br from-purple-500/40 to-transparent" : ""
                                                             )} />
                                                             <div className="absolute bottom-2 left-2 right-2 h-4 rounded-full bg-white/5" />
                                                             <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-white/10" />
@@ -374,12 +375,12 @@ export default function SettingsPage() {
 
                                 {activeTab === "notifications" && (
                                     <div className="space-y-6 text-left">
-                                        {[
+                                        {([
                                             { id: "velocityAlerts", title: "Velocity Alerts", desc: "Notify when development velocity drops or spikes unexpectedly.", icon: Zap },
                                             { id: "metricMilestones", title: "Metric Milestones", desc: "Get alerted when reaching repository star or commit milestones.", icon: Check },
                                             { id: "neuralSummaries", title: "Neural Summaries", desc: "Weekly AI-generated summary of your engineering impact.", icon: Smartphone },
                                             { id: "systemAnomalies", title: "System Anomalies", desc: "Security and system status notifications.", icon: Shield },
-                                        ].map((item) => (
+                                        ] as const).map((item) => (
                                             <div key={item.title} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group hover:border-white/20 transition-all">
                                                 <div className="flex items-center gap-4">
                                                     <div className="p-2.5 rounded-xl bg-white/5 text-blue-400 group-hover:scale-110 transition-transform">
@@ -394,12 +395,12 @@ export default function SettingsPage() {
                                                     onClick={() => updateSettings({
                                                         notifications: {
                                                             ...settings.notifications,
-                                                            [item.id as keyof typeof settings.notifications]: !((settings.notifications as any)[item.id])
+                                                            [item.id]: !settings.notifications[item.id]
                                                         }
                                                     })}
                                                     className={cn(
                                                         "w-12 h-6 rounded-full flex items-center px-1 cursor-pointer transition-colors",
-                                                        (settings.notifications as any)[item.id] ? "bg-blue-500 justify-end" : "bg-white/10 justify-start"
+                                                        settings.notifications[item.id] ? "bg-blue-500 justify-end" : "bg-white/10 justify-start"
                                                     )}
                                                 >
                                                     <div className="w-4 h-4 bg-white rounded-full shadow-sm" />
@@ -411,7 +412,7 @@ export default function SettingsPage() {
 
                                 {activeTab === "security" && (
                                     <div className="space-y-6 text-left">
-                                        <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 to-red-500/10 border border-amber-500/20">
+                                        <div className="p-6 rounded-2xl bg-linear-to-r from-amber-500/10 to-red-500/10 border border-amber-500/20">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <Shield className="w-5 h-5 text-amber-500" />
                                                 <h4 className="font-bold text-amber-500">Enhanced Security Protocol</h4>
@@ -435,9 +436,9 @@ export default function SettingsPage() {
                                                     })}
                                                     className="bg-transparent border-none text-sm font-bold text-blue-400 focus:outline-none appearance-none cursor-pointer"
                                                 >
-                                                    <option className="bg-[#0a0a0b]" value="24 Hours">24 Hours</option>
-                                                    <option className="bg-[#0a0a0b]" value="7 Days">7 Days</option>
-                                                    <option className="bg-[#0a0a0b]" value="30 Days">30 Days</option>
+                                                    <option className="bg-background" value="24 Hours">24 Hours</option>
+                                                    <option className="bg-background" value="7 Days">7 Days</option>
+                                                    <option className="bg-background" value="30 Days">30 Days</option>
                                                 </select>
                                             </div>
                                             <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">

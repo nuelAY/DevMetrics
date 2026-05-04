@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Zap, MousePointer2, ChevronRight, Activity } from "lucide-react";
+import { Github, MousePointer2, ChevronRight, Activity } from "lucide-react";
 import { signIn } from "next-auth/react";
 
 export function Hero() {
@@ -29,7 +29,7 @@ export function Hero() {
                     <Activity className="w-3 h-3" /> System Status: Optimal
                 </motion.div>
 
-                <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[0.9] uppercase italic">
+                <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 bg-clip-text text-transparent bg-linear-to-b from-white to-white/40 leading-[0.9] uppercase italic">
                     The Neural <br />
                     Performance Cockpit.
                 </h1>

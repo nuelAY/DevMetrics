@@ -1,12 +1,12 @@
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { GitHubService } from "@/services/github";
+import { GitHubService, PushEventPayload } from "@/services/github";
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 
 export async function GET() {
   await dbConnect();
-  const session = await getServerSession(authOptions) as any;
+  const session = await getServerSession(authOptions) as Session | null;
 
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -86,7 +86,7 @@ export async function GET() {
     if (events.length > 50) badges.push({ id: 'marathoner', label: 'Marathoner', icon: 'Zap', color: 'text-orange-400' });
     
     const hasRefactors = events.some(e => 
-        e.type === 'PushEvent' && (e.payload as any).commits?.some((c: any) => c.message.toLowerCase().includes('refactor'))
+        e.type === 'PushEvent' && (e.payload as PushEventPayload).commits?.some((c) => c.message.toLowerCase().includes('refactor'))
     );
     if (hasRefactors) badges.push({ id: 'clean-coder', label: 'Clean Coder', icon: 'Shield', color: 'text-blue-400' });
 
@@ -132,8 +132,9 @@ export async function GET() {
       },
       user: userData
     });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "An unknown error occurred";
     console.error("Analytics Fetch Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

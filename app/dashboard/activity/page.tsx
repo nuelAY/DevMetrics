@@ -5,21 +5,48 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    GitPullRequest, GitCommit, GitMerge, MessageSquare,
-    Star, Info, Clock, Github, Zap, Activity, Calendar,
-    ChevronRight, Bug, Rocket, RefreshCw, FileCode,
+    GitPullRequest, GitCommit,
+    Info, Clock, Github, Zap, Activity, Calendar,
+    Bug, Rocket, RefreshCw, FileCode,
     Trophy, Flame, TrendingUp as VelocityIcon, PieChart as PieIcon,
     ChevronDown, ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow, format, isSameDay, startOfDay, subDays, differenceInDays } from "date-fns";
 import {
-    PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
-    BarChart, Bar, XAxis, YAxis
+    PieChart, Pie, Cell, ResponsiveContainer, Tooltip
 } from "recharts";
 
+interface ActivityEvent {
+    id: string;
+    type: string;
+    repo: string;
+    createdAt: string;
+    payload: {
+        commits?: {
+            sha: string;
+            message: string;
+        }[];
+        action?: string;
+        pull_request?: {
+            title: string;
+            number: number;
+            html_url: string;
+        };
+    };
+}
+
+interface SessionGroup {
+    id: string;
+    startTime: number;
+    endTime: number;
+    events: ActivityEvent[];
+    repo: string;
+    impactCount: number;
+}
+
 export default function ActivityPage() {
-    const [events, setEvents] = useState<any[]>([]);
+    const [events, setEvents] = useState<ActivityEvent[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
@@ -69,7 +96,7 @@ export default function ActivityPage() {
         const sortedDays = Array.from(activeDays).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
         let currentStreak = 0;
-        let today = startOfDay(new Date());
+        const today = startOfDay(new Date());
 
         for (let i = 0; i < sortedDays.length; i++) {
             const day = startOfDay(new Date(sortedDays[i]));
@@ -133,8 +160,8 @@ export default function ActivityPage() {
     // 3. Smart Grouping (Sessions)
     const sessions = useMemo(() => {
         if (!events.length) return [];
-        const groups: any[] = [];
-        let currentSession: any = null;
+        const groups: SessionGroup[] = [];
+        let currentSession: SessionGroup | null = null;
 
         events.forEach((event, i) => {
             const eventTime = new Date(event.createdAt).getTime();
@@ -167,7 +194,7 @@ export default function ActivityPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white">
+        <div className="min-h-screen bg-background text-white">
             <Sidebar />
             <Header />
 
@@ -315,7 +342,7 @@ export default function ActivityPage() {
                     <div className="space-y-10">
                         <div className="flex items-center gap-4 mb-2">
                             <h3 className="text-xl font-bold">Session Explorer</h3>
-                            <div className="h-[1px] flex-1 bg-white/5" />
+                            <div className="h-px flex-1 bg-white/5" />
                         </div>
 
                         {loading ? (
@@ -344,7 +371,7 @@ export default function ActivityPage() {
                                             </div>
                                         </div>
 
-                                        <div className="glass p-6 rounded-3xl border-white/5 group-hover:border-purple-500/20 transition-all bg-white/[0.02]">
+                                        <div className="glass p-6 rounded-3xl border-white/5 group-hover:border-purple-500/20 transition-all bg-white/2">
                                             <div className="flex items-center justify-between mb-6">
                                                 <div className="flex items-center gap-3">
                                                     <div className="p-2 rounded-xl bg-purple-500/10">
@@ -358,7 +385,7 @@ export default function ActivityPage() {
                                             </div>
 
                                             <div className="space-y-4">
-                                                {session.events.map((event: any) => {
+                                                {session.events.map((event) => {
                                                     const commitMessage = event.payload.commits?.[0]?.message || "";
                                                     const badge = event.type === "PushEvent" ? getCommitBadge(commitMessage) : null;
                                                     const isExpanded = selectedEventId === event.id;
@@ -383,9 +410,9 @@ export default function ActivityPage() {
                                                                             event.type === "PushEvent" ? (
                                                                                 <div className="flex flex-col gap-0.5">
                                                                                     <span>{event.payload.commits?.[0]?.message || "System push update"}</span>
-                                                                                    {event.payload.commits?.length > 1 && (
+                                                                                    {((event.payload.commits?.length || 0) > 1) && (
                                                                                         <span className="text-[10px] text-blue-400/60 font-medium italic">
-                                                                                            + {event.payload.commits.length - 1} more {(event.payload.commits.length - 1) === 1 ? 'commit' : 'commits'} in this push
+                                                                                            + {(event.payload.commits?.length || 0) - 1} more {((event.payload.commits?.length || 0) - 1) === 1 ? 'commit' : 'commits'} in this push
                                                                                         </span>
                                                                                     )}
                                                                                 </div>
@@ -424,7 +451,7 @@ export default function ActivityPage() {
                                                                                 {event.type === "PushEvent" ? (
                                                                                     <div className="space-y-2">
                                                                                         <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">Commits in this push</p>
-                                                                                        {event.payload.commits?.map((commit: any) => (
+                                                                                        {event.payload.commits?.map((commit) => (
                                                                                             <div key={commit.sha} className="flex items-center justify-between gap-4 p-2 rounded-lg bg-black/20 text-xs">
                                                                                                 <code className="text-blue-400/70 text-[10px]">{commit.sha.substring(0, 7)}</code>
                                                                                                 <span className="flex-1 text-white/60 truncate">{commit.message}</span>
@@ -436,12 +463,12 @@ export default function ActivityPage() {
                                                                                     </div>
                                                                                 ) : event.type === "PullRequestEvent" ? (
                                                                                     <div className="space-y-2">
-                                                                                        <p className="text-sm font-bold text-white/80">{event.payload.pull_request.title}</p>
+                                                                                        <p className="text-sm font-bold text-white/80">{event.payload.pull_request?.title}</p>
                                                                                         <div className="flex items-center gap-4">
                                                                                             <span className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded-full font-bold uppercase tracking-widest border border-purple-500/20">
-                                                                                                #{event.payload.pull_request.number}
+                                                                                                #{event.payload.pull_request?.number}
                                                                                             </span>
-                                                                                            <a href={event.payload.pull_request.html_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 flex items-center gap-1 hover:underline">
+                                                                                            <a href={event.payload.pull_request?.html_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 flex items-center gap-1 hover:underline">
                                                                                                 View on GitHub <ExternalLink className="w-3 h-3" />
                                                                                             </a>
                                                                                         </div>

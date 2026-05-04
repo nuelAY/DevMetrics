@@ -3,23 +3,69 @@
 import { useEffect, useState, useMemo } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-    TrendingUp, BarChart3, PieChart as PieIcon,
+    TrendingUp,
     Clock, Cpu, Zap, Activity, Globe,
-    Code2, Calendar, Target, Layers,
-    ArrowUpRight, ArrowDownRight, Info
+    Code2, Calendar, Target, Layers, Info
 } from "lucide-react";
 import {
     ResponsiveContainer, AreaChart, Area,
-    XAxis, YAxis, Tooltip, BarChart, Bar,
-    PieChart, Pie, Cell, RadarChart,
+    XAxis, YAxis, Tooltip, BarChart, Bar, RadarChart,
     PolarGrid, PolarAngleAxis, Radar
 } from "recharts";
 import { cn } from "@/lib/utils";
 
+interface Insight {
+    title: string;
+    content: string;
+    type: string;
+}
+
+interface Language {
+    name: string;
+    percent: number;
+}
+
+interface MomentumRepo {
+    name: string;
+    score: number;
+    count: number;
+}
+
+interface ActivityByHour {
+    hour: number;
+    count: number;
+}
+
+interface Badge {
+    id: string;
+    label: string;
+    icon: string;
+    color: string;
+}
+
+interface EvolutionPoint {
+    date: string;
+    TypeScript: number;
+    React: number;
+    Node: number;
+}
+
+interface AnalyticsData {
+    activityByHour: ActivityByHour[];
+    eventTypes: { name: string; value: number }[];
+    overTime: { date: string; count: number }[];
+    languages: Language[];
+    momentum: MomentumRepo[];
+    badges: Badge[];
+    evolution: EvolutionPoint[];
+    insights: Insight[];
+    totalEvents: number;
+}
+
 export default function AnalyticsPage() {
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<AnalyticsData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -39,20 +85,20 @@ export default function AnalyticsPage() {
         fetchAnalytics();
     }, []);
 
-    const COLORS = ["#3b82f6", "#a855f7", "#2dd4bf", "#f59e0b", "#94a3b8", "#ec4899"];
+    // const COLORS = ["#3b82f6", "#a855f7", "#2dd4bf", "#f59e0b", "#94a3b8", "#ec4899"];
 
     const stats = useMemo(() => {
         if (!data) return [];
         return [
             { label: "Total Events", value: data.totalEvents, icon: Activity, trend: "+12%", color: "text-blue-400" },
-            { label: "Top Hour", value: `${data.activityByHour.sort((a: any, b: any) => b.count - a.count)[0]?.hour}:00`, icon: Clock, trend: "Peak", color: "text-purple-400" },
+            { label: "Top Hour", value: `${[...data.activityByHour].sort((a, b) => b.count - a.count)[0]?.hour}:00`, icon: Clock, trend: "Peak", color: "text-purple-400" },
             { label: "Languages", value: data.languages.length, icon: Code2, trend: "Active", color: "text-teal-400" },
             { label: "Efficiency", value: "84%", icon: Target, trend: "+5%", color: "text-orange-400" },
         ];
     }, [data]);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white">
+        <div className="min-h-screen bg-background text-white">
             <Sidebar />
             <Header />
 
@@ -83,11 +129,16 @@ export default function AnalyticsPage() {
                                 <div key={i} className="h-32 glass animate-pulse rounded-3xl" />
                             ))}
                         </div>
+                    ) : !data ? (
+                        <div className="text-center py-20 text-white/40">
+                            <Info className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                            <p>No analytics data available.</p>
+                        </div>
                     ) : (
                         <>
                             {/* AI Coach Insights */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                                {data.insights.map((insight: any, i: number) => (
+                                {data.insights.map((insight, i) => (
                                     <motion.div
                                         key={insight.title}
                                         initial={{ opacity: 0, x: -20 }}
@@ -202,7 +253,7 @@ export default function AnalyticsPage() {
                                     </h3>
                                     <p className="text-xs text-white/30 mb-6">Velocity trends per repository</p>
                                     <div className="space-y-6">
-                                        {data.momentum.map((repo: any, i: number) => (
+                                        {data.momentum.map((repo, i) => (
                                             <div key={repo.name} className="space-y-2">
                                                 <div className="flex justify-between items-end">
                                                     <span className="text-sm font-bold text-white/80">{repo.name}</span>
@@ -213,7 +264,7 @@ export default function AnalyticsPage() {
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${repo.score}%` }}
                                                         transition={{ duration: 1, delay: i * 0.1 }}
-                                                        className="h-full bg-gradient-to-r from-orange-500 to-red-500"
+                                                        className="h-full bg-linear-to-r from-orange-500 to-red-500"
                                                     />
                                                 </div>
                                             </div>
@@ -258,7 +309,7 @@ export default function AnalyticsPage() {
                                     </h3>
                                     <p className="text-xs text-white/30 mb-6">Unlocked technical milestones</p>
                                     <div className="grid grid-cols-2 gap-4">
-                                        {data.badges.map((badge: any) => (
+                                        {data.badges.map((badge) => (
                                             <div key={badge.id} className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
                                                 <div className={cn("p-2 rounded-xl mb-2 bg-white/5 group-hover:scale-110 transition-transform", badge.color)}>
                                                     <Zap className="w-5 h-5" />

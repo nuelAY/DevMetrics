@@ -73,7 +73,7 @@ export function FeatureShowcase() {
                         transition={{ delay: 0.1 }}
                         className="text-white/40 max-w-2xl mx-auto font-medium"
                     >
-                        DevMetrics isn't just a dashboard. It's an intelligent workspace designed to quantify your impact and accelerate your career growth.
+                        DevMetrics isn&apos;t just a dashboard. It&apos;s an intelligent workspace designed to quantify your impact and accelerate your career growth.
                     </motion.p>
                 </div>
 

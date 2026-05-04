@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { GitHubService } from "@/services/github";
 import { NextResponse } from "next/server";
@@ -6,7 +6,7 @@ import dbConnect from "@/lib/dbConnect";
 
 export async function GET() {
   await dbConnect();
-  const session = await getServerSession(authOptions) as any;
+  const session = await getServerSession(authOptions) as Session | null;
 
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,7 +23,7 @@ export async function GET() {
     const repos = await github.getRepositories();
     
     // Transform to a cleaner format for the UI
-    const projects = repos.map((repo: any) => ({
+    const projects = repos.map((repo) => ({
         id: repo.id,
         name: repo.name,
         description: repo.description,
@@ -39,8 +39,9 @@ export async function GET() {
     }));
 
     return NextResponse.json({ projects });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "An unknown error occurred";
     console.error("GitHub Projects Fetch Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

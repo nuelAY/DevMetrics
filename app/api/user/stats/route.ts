@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { GitHubService } from "@/services/github";
 import { User } from "@/models/User";
@@ -8,7 +8,7 @@ import dbConnect from "@/lib/dbConnect";
 
 export async function GET() {
   await dbConnect();
-  const session = await getServerSession(authOptions) as any;
+  const session = await getServerSession(authOptions) as Session | null;
 
 
   if (!session || !session.user) {
@@ -36,7 +36,7 @@ export async function GET() {
       languages,
     };
 
-    const aiSummary = AIService.generateSummary(stats, userData);
+    const aiSummary = AIService.generateSummary(stats);
     const productivityScore = AIService.calculateProductivityScore(stats);
 
     // Update user in DB with stats
@@ -53,8 +53,9 @@ export async function GET() {
     );
 
     return NextResponse.json({ stats, user: userData, aiSummary, productivityScore });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "An unknown error occurred";
     console.error("GitHub Fetch Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

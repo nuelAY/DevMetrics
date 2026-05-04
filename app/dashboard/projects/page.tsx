@@ -4,11 +4,26 @@ import { useEffect, useState, useMemo } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { motion, AnimatePresence } from "framer-motion";
-import { Code2, Star, GitFork, ExternalLink, Search, Filter, Lock, Globe } from "lucide-react";
+import { Code2, Star, GitFork, ExternalLink, Search, Lock, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+interface Project {
+    id: number;
+    name: string;
+    description: string | null;
+    language: string | null;
+    stars: number;
+    forks: number;
+    url: string;
+    homepage: string | null;
+    updatedAt: string;
+    private: boolean;
+    openIssues: number;
+    topics: string[];
+}
+
 export default function ProjectsPage() {
-    const [projects, setProjects] = useState<any[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filter, setFilter] = useState("all"); // all, public, private
@@ -41,13 +56,13 @@ export default function ProjectsPage() {
         });
     }, [projects, searchQuery, filter]);
 
-    const languages = useMemo(() => {
-        const counts: Record<string, number> = {};
-        projects.forEach(p => {
-            if (p.language) counts[p.language] = (counts[p.language] || 0) + 1;
-        });
-        return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
-    }, [projects]);
+    // const languages = useMemo(() => {
+    //     const counts: Record<string, number> = {};
+    //     projects.forEach(p => {
+    //         if (p.language) counts[p.language] = (counts[p.language] || 0) + 1;
+    //     });
+    //     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    // }, [projects]);
 
     const getProjectStatus = (updatedAt: string) => {
         const lastUpdate = new Date(updatedAt);
@@ -60,13 +75,13 @@ export default function ProjectsPage() {
         return { label: "Stable", color: "bg-white/5 text-white/40 border-white/10" };
     };
 
-    const calculateImpactScore = (p: any) => {
+    const calculateImpactScore = (p: Project) => {
         const score = (p.stars * 10) + (p.forks * 5) + (Math.max(0, 50 - p.openIssues));
         return Math.min(100, Math.floor(score / 2)); // Dynamic normalized score
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white">
+        <div className="min-h-screen bg-background text-white">
             <Sidebar />
             <Header />
 

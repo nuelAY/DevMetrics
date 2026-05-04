@@ -1,6 +1,7 @@
 import { User } from "@/models/User";
 import { notFound } from "next/navigation";
-import { GitCommit, Star, Archive, TrendingUp, Github } from "lucide-react";
+import { GitCommit, Star, Archive, TrendingUp, Github, } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import dbConnect from "@/lib/dbConnect";
@@ -10,7 +11,11 @@ async function getProfileData(username: string) {
     return await User.findOne({ githubUsername: username });
 }
 
-export default async function PublicProfilePage({ params }: { params: any }) {
+interface PageProps {
+    params: Promise<{ username: string }>;
+}
+
+export default async function PublicProfilePage({ params }: PageProps) {
     const { username } = await params;
     const user = await getProfileData(username);
 
@@ -27,11 +32,11 @@ export default async function PublicProfilePage({ params }: { params: any }) {
     ];
 
     return (
-        <div className="min-h-screen bg-[#0a0a0b] text-white p-4 md:p-24 flex flex-col items-center">
+        <div className="min-h-screen bg-background text-white p-4 md:p-24 flex flex-col items-center">
             <div className="max-w-4xl w-full">
                 <header className="flex flex-col items-center text-center mb-12 md:mb-16">
                     <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white/10 overflow-hidden mb-6 shadow-[0_0_50px_rgba(59,130,246,0.2)]">
-                        <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                        <Image src={user.image} alt={user.name} className="w-full h-full object-cover" />
                     </div>
                     <h1 className="text-3xl md:text-5xl font-bold mb-2">{user.name}</h1>
                     <p className="text-lg md:text-xl text-white/50 flex items-center gap-2">
@@ -48,7 +53,7 @@ export default async function PublicProfilePage({ params }: { params: any }) {
                     </div>
                     <h3 className="text-[10px] md:text-sm font-bold text-white/30 uppercase tracking-widest mb-4">AI Performance Summary</h3>
                     <p className="text-xl md:text-2xl font-medium leading-relaxed italic">
-                        "{user.aiSummary}"
+                        &quot;{user.aiSummary}&quot;
                     </p>
                 </div>
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Zap } from "lucide-react";
-import { signIn } from "next-auth/react";
+import {  Zap } from "lucide-react";
+// import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";

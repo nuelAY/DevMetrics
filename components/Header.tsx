@@ -5,6 +5,7 @@ import { Bell, Search, User, Menu } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useNav } from "@/context/NavContext";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function Header() {
     const { data: session } = useSession();
@@ -24,7 +25,7 @@ export function Header() {
             className={cn(
                 "fixed top-0 right-0 left-0 lg:left-64 h-20 transition-all duration-300 z-40 flex items-center justify-between px-4 md:px-8",
                 scrolled
-                    ? "bg-[#0a0a0b]/80 backdrop-blur-xl border-b border-white/10"
+                    ? "bg-background/80 backdrop-blur-xl border-b border-white/10"
                     : "bg-transparent border-b border-transparent"
             )}
         >
@@ -49,7 +50,7 @@ export function Header() {
             <div className="flex items-center gap-6 p-2">
                 <button className="relative text-white/60 hover:text-white transition-colors">
                     <Bell className="w-5 h-5" />
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full border-2 border-[#0a0a0b]" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full border-2 border-background" />
                 </button>
 
                 <div className="flex items-center gap-3 pl-6 border-l border-white/10">
@@ -57,10 +58,10 @@ export function Header() {
                         <p className="text-sm font-semibold">{session?.user?.name}</p>
                         <p className="text-xs text-white/40">{session?.user?.email}</p>
                     </div>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-[1px]">
-                        <div className="w-full h-full rounded-full bg-[#0a0a0b] flex items-center justify-center overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-500 p-px">
+                        <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
                             {session?.user?.image ? (
-                                <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
+                                <Image src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
                             ) : (
                                 <User className="w-5 h-5 text-white/60" />
                             )}

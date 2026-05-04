@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 
-type Theme = 'Dark Neural' | 'Cyber Ghost' | 'Deep Void';
+export type Theme = 'Dark Neural' | 'Cyber Ghost' | 'Deep Void';
 
-interface NotificationSettings {
+export interface NotificationSettings {
     velocityAlerts: boolean;
     metricMilestones: boolean;
     neuralSummaries: boolean;
@@ -16,7 +16,7 @@ interface SecuritySettings {
     sessionTimeout: string;
 }
 
-interface Settings {
+export interface Settings {
     theme: Theme;
     glassIntensity: number;
     neonAccents: boolean;
@@ -48,7 +48,7 @@ const defaultSettings: Settings = {
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const [settings, setSettings] = useState<Settings>(defaultSettings);
     const [isLoading, setIsLoading] = useState(true);
 
